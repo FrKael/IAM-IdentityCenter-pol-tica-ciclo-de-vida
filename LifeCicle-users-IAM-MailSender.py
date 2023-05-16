@@ -3,7 +3,6 @@ import datetime
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import pandas as pd
 
 def lambda_handler(event, context):
     # Obtener la fecha actual
@@ -39,7 +38,7 @@ def lambda_handler(event, context):
             # Si la diferencia en días es mayor a 90, agregar el usuario a la lista de inactivos
             if delta_days > 90:
                 inactive_users.append(
-                    f'{user["UserName"]}: {delta_days} días, {delta_hours} horas'
+                    {'Nombre de usuario': user["UserName"], 'Última actividad': f'{delta_days} días, {delta_hours} horas'}
                 )
                 j += 1
                 print(f'user sended {j}')
@@ -49,12 +48,11 @@ def lambda_handler(event, context):
                 active_users.append(
                     f'{user["UserName"]}: {delta_days} días, {delta_hours} horas'
                 )
-    # Si hay al menos un usuario inactivo, enviar un mensaje a través de SNS con la lista de inactivos y activos
+
+    # Si hay al menos un usuario inactivo, enviar un mensaje a través de SES con la lista de inactivos y activos
     if inactive_users:
-
         sender = 'dchavez@morris-labs.com' # cambiar de ser necesario
-
-        recipients = 'jorax75489@jwsuns.com' # mail TEMPORAL
+        recipients = 'dchavez@morris-labs.com' # reemplazar con la lista de destinatarios
 
         # Crear el objeto MIMEMultipart
         message = MIMEMultipart()
@@ -63,12 +61,28 @@ def lambda_handler(event, context):
         message['To'] = recipients
 
         # Construir el cuerpo del mensaje
-        body = 'Los siguientes usuarios han estado inactivos por más de 90 días:\n\n'
+        body = '<table><tr><th colspan="2" style="text-align: left; padding: 8px; background-color: #ddd; border: 1px solid black;">Usuarios inactivos por más de 90 días:</th></tr>'
+        body += '<tr><th style="border: 1px solid black; padding: 8px;">Nombre de usuario</th><th style="border: 1px solid black; padding: 8px;">Última actividad</th></tr>'
         for user in inactive_users:
-            body += f'Nombre de usuario: {user.split(":")[0]}\nÚltima actividad: {user.split(":")[1]}\n\n'
+            body += f'<tr><td style="border: 1px solid black; padding: 8px;">{user["Nombre de usuario"]}</td><td style="border: 1px solid black; padding: 8px;">{user["Última actividad"]}</td></tr>'
+        body += '</table>'
 
         # Crear el objeto MIMEText con el contenido del mensaje
         message_text = MIMEText(body, 'html')
 
         # Adjuntar el objeto MIMEText al objeto MIMEMultipart
         message.attach(message_text)
+
+        # funcion para enviar un correo electronico mediante SES usando MIMEText y MIMEMultipart
+        def send_email(sender, recipients, message):
+            ses_client.send_raw_email(
+                Source=sender,
+                Destinations=[recipients],
+                RawMessage={
+                    'Data': message.as_string(),
+                },
+            )
+            print('Email sent!')
+            return True
+        send_email(sender, recipients, message)
+        return True
