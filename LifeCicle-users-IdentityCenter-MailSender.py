@@ -1,6 +1,12 @@
 import boto3
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+###############################
+# Lambda para enviar notificaciones por correo electrónico
+# a usuarios Identity Center que no han realizado ninguna actividad en 3 meses.
+# CloudTrail para rescatar eventos de actividad de usuarios.# Utiliza SES para enviar correos electrónicos 
+# formato HTML en el body de la notificación.
+###############################
 
 def lambda_handler(event, context):
 
@@ -71,4 +77,4 @@ def lambda_handler(event, context):
         }
     )
 
-    return ""
+    return "lambda ejecutada!"
