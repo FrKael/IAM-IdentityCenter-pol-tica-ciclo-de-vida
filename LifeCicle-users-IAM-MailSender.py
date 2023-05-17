@@ -57,14 +57,15 @@ def lambda_handler(event, context):
                     f'{user["UserName"]}: {delta_days} días, {delta_hours} horas'
                 )
 
+    subject = 'Usuarios inactivos por más de 90 días' #  <------ reemplazar con asunto especifico
+    sender = 'dchavez@morris-labs.com' # <------ reemplazar con el correo electrónico de envío
+    recipients = 'dchavez@morris-labs.com' # <------ reemplazar con la lista [] de destinatarios 
+
     # si hay al menos un usuario inactivo, enviar un mensaje a través de SES con la lista de inactivos y activos
     if inactive_users:
-        sender = 'dchavez@morris-labs.com' # <------ cambiar de ser necesario
-        recipients = 'dchavez@morris-labs.com' # <------ reemplazar con la lista [] de destinatarios 
-        
         #objeto MIMEMultipart
         message = MIMEMultipart()
-        message['Subject'] = 'Usuarios inactivos por más de 90 días'
+        message['Subject'] = subject
         message['From'] = sender
         message['To'] = recipients
 
@@ -86,7 +87,5 @@ def lambda_handler(event, context):
                     'Data': message.as_string(),
                 },
             )
-            print('Email sent!')
             return True
         send_email(sender, recipients, message)
-        return True
