@@ -1,7 +1,5 @@
 ﻿# WAR
 # Implementar una política de ciclo de vida del acceso del usuario 
-<img src="https://www.morrisopazo.com/wp-content/uploads/Morris_Opazo_logo_web.png" alt="Descripción de la imagen" width="250px">
-
 
 Este proyecto consiste en una lambda de AWS que envía notificaciones por correo electrónico de los usuarios IAM e IAM Identity Center inactivos durante más de 90 días.
 La lambda utiliza SES (Amazon Simple Email Service) para enviar correos electrónicos con formato HTML en el cuerpo del mensaje.
