@@ -1,6 +1,6 @@
 ﻿# WAR
 # Implementar una política de ciclo de vida del acceso del usuario 
-![MO](https://www.morrisopazo.com/wp-content/uploads/Morris_Opazo_logo_web.png =300px)
+![MO](https://www.morrisopazo.com/wp-content/uploads/Morris_Opazo_logo_web.png){:height="300px" width="300px"}
 
 
 Este proyecto consiste en una lambda de AWS que envía notificaciones por correo electrónico de los usuarios IAM e IAM Identity Center inactivos durante más de 90 días.
